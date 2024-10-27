@@ -1,0 +1,57 @@
+// drop columns Zeitzone, DST, Zeitzonen-Datenbank, geo_punkt
+// Assign fitting built-in SQLite types (BIGINT, TEXT, FLOAT) to other colums
+// Do not rename column names, no other data validation or transformation
+
+// Write data into a SQLite database called “airports.sqlite”, in the table “airports”
+
+pipeline AirportsPipeline {
+
+    AirportsExtractor
+        -> AirportsTextFileInterpreter
+        -> AirportsCSVInterpreter
+        -> AirportsColumnDeleter
+        -> AirportsTableInterpreter
+        -> AirportsLoader;
+
+    // Syntax ist übersichtlich
+
+    // Fetch CSV file
+    block AirportsExtractor oftype HttpExtractor {
+        url: "https://opendata.rhein-kreis-neuss.de/api/explore/v2.1/catalog/datasets/rhein-kreis-neuss-flughafen-weltweit/exports/csv?lang=en&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B";
+    }
+
+    // Interpret binary file as text-file 
+    block AirportsTextFileInterpreter oftype TextFileInterpreter { } // It's not intuitive what is interpreted into what. why not have just one block from http -> table
+
+    // Interpret text-file as a sheet
+    block AirportsCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+        // evtl enclosing
+    }
+
+    // Drop columns
+    block AirportsColumnDeleter oftype ColumnDeleter {
+        // I don't like that I cant give column names here - also why alphabetical? what if there are more columns than letters?
+        delete: [column J, column K, column L, column M];
+    }
+
+    block AirportsTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "Lfd. Nummer" oftype integer,
+            "Name des Flughafens" oftype text,
+            "Ort" oftype text,
+            "Land" oftype text,
+            "IATA" oftype text, //?? -> can be 0 or "VTM", "ETH" etc -> does this now mean rows with 0 are dropped or are they stored "0"
+            "ICAO" oftype text,
+            "Latitude" oftype decimal,
+            "Longitude" oftype decimal,
+            "Altitude" oftype integer,
+        ];
+    }
+
+    block AirportsLoader oftype SQLiteLoader {
+        table: "airports";
+        file: "./airports.sqlite";
+    }
+}
