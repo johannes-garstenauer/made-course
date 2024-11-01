@@ -1,0 +1,57 @@
+pipeline TreesPipeline {
+
+    TreesExtractor
+        -> TreesTextFileInterpreter
+        -> TreesCSVInterpreter
+        -> TreesTableInterpreter
+        -> TreesLoader;
+
+    // Fetch CSV file
+    block TreesExtractor oftype HttpExtractor {
+        url: "https://opendata.rhein-kreis-neuss.de/api/v2/catalog/datasets/stadt-neuss-herbstpflanzung-2023/exports/csv";
+    }
+
+    // Interpret binary file as text-file 
+    block TreesTextFileInterpreter oftype TextFileInterpreter { }
+
+    // Interpret text-file as a sheet
+    block TreesCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+
+    block TreesTableInterpreter oftype TableInterpreter {
+        header: true;
+        columns: [
+            "lfd_nr" oftype integer,
+            "stadtteil" oftype StadteilName,
+            "standort" oftype text,
+            "baumart_botanisch" oftype text,
+            "id" oftype text, //GeoCoordinate,
+            "baumfamilie" oftype text,
+        ];
+    }
+
+    block TreesLoader oftype SQLiteLoader {
+        table: "trees";
+        file: "./trees.sqlite";
+    }
+
+    // Define valuetype to assign to stadtteil column
+    valuetype StadteilName oftype text {
+        constraints: [StadtteilConstraint];
+    }
+
+    // Define a valuetype for geo-coordinate column id 
+    valuetype GeoCoordinate oftype text {
+        constraints: [GeoCoordinateConstraint];
+    }
+
+    // Define a constraint that matches only valid Stadtteil names
+    constraint StadtteilConstraint oftype RegexConstraint {
+        regex:  /^Vogelsang/;
+    }
+
+    constraint GeoCoordinateConstraint oftype RegexConstraint {
+        regex: /^\d{1,3}\.\d+, \d{1,3}\.\d+$/;
+    }
+}
