@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://catalog.data.gov/
+HostUrl=https://data.cdc.gov/api/views/tpcp-uiv5/rows.csv?accessType=DOWNLOAD
