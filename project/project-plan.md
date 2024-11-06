@@ -1,12 +1,11 @@
 # Project Plan
 
 ## COVID-19 Mortality In Selected Countries of The Americas
-<!-- Give your project a short title. -->
+
 A survey of COVID-19 mortality datasets from the United States, Chile, Colombia and Mexico (subject to change).
 
 ## Main Question
 
-<!-- Think about one main question you want to answer based on the data. -->
 1. COVID-19 Mortality in the Americas: How does Covid-19 mortality compare in the selected nations in South- and North America in absolute and in relative terms from 2020 to 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
@@ -56,7 +55,6 @@ A survey of COVID-19 mortality datasets from the United States, Chile, Colombia 
 
 ## Description
 
-<!-- Describe your data science project in max. 200 words. Consider writing about why and how you attempt it. -->
 The COVID-19 pandemic has had a lasting effect on the world. It has been an upheaval of economic, political and societal realities larger than most have ever seen in their lifetimes. This is not least due to the large number of lifes the pandemic has claimed.
 In this project we analyze mortality resulting from the Corona Virus in the Americas. 
 
@@ -69,14 +67,11 @@ As a result, this report can be a starting point for research into questions of 
 
 ## Datasources
 
-<!-- Describe each datasources you plan to use in a section. Use the prefic "DatasourceX" where X is the id of the datasource. -->
-
 ### Datasource 1: (Chile) Defunciones por COVID19
 * Metadata URL: https://datos.gob.cl/dataset/defunciones-por-covid19
 * Data URL: https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv
 * Data Type: CSV
 * License: Creative Commons Non-Commercial
-<!-- CC-BY-NC is fine for our purposes according to the forum. -->
 
 Total number of COVID-19 deaths in Chile from 1/2020 to 9/2024 on a daily/case-by-case basis. This dataset is provided by the official government data portal under the Creative Commons NonCommercial license.
 
@@ -113,8 +108,6 @@ Total number of COVID-19 deaths in Mexico from 3/2020 to 6/2023 on a daily basis
 World population numbers for each nation and year from 1960-2023. This data is employed for calculating the mortality relative to total population. This dataset is provided by the World Bank Group (WBG), the worldl's largest development loan bank and an observer at the United Nations. Its open data portal content is licensed under Creative Commons Attribution 4.0 (CC-BY 4.0).
 
 ## Work Packages
-
-<!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
 1. Finding Suitable Datasets of COVID-19 Mortality in South- and North American Nations [#1][i1]
 2. Exploratory Data Analysis [#2][i2]
