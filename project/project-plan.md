@@ -116,13 +116,16 @@ World population numbers for each nation and year from 1960-2023. This data is e
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
-1. Example Issue [#1][i1]
-2. ...
+1. Finding Suitable Datasets of COVID-19 Mortality in South- and North American Nations [#1][i1]
+2. Exploratory Data Analysis [#2][i2]
+3. Creating An Automated Data Pipeline [#3][i3]
+4. Extracting Insights From Data [#4][i4]
+5. Plotting Of Insights and Data [#5][i5]
+5. Writing And Finalizing The Report [#6][i6]
 
-<!-- Finding Suitable Datasets (Estimate Relevancy, Accuracy, Consistency, Timeliness and Completeness)-->
-<!-- Exploratory Data Analysis -->
-<!-- Creating an automated data pipeline (Loading data & Data Transformation) -->
-<!-- Extracting insights from data -->
-<!-- Plotting the insights and data -->
-<!-- Writing/Finalizing the report -->
-[i1]: https://github.com/jvalue/made-template/issues/1
+[i1]: https://github.com/johannes-garstenauer/made-course/issues/2
+[i2]: https://github.com/johannes-garstenauer/made-course/issues/3
+[i3]: https://github.com/johannes-garstenauer/made-course/issues/4
+[i4]: https://github.com/johannes-garstenauer/made-course/issues/5
+[i5]: https://github.com/johannes-garstenauer/made-course/issues/6
+[i6]: https://github.com/johannes-garstenauer/made-course/issues/7
