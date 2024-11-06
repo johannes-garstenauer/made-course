@@ -2,24 +2,24 @@
 
 ## COVID-19 Mortality In Selected Countries of The Americas
 <!-- Give your project a short title. -->
-A survey of COVID-19 mortality datasets from the United States, Chile and Brazil.
+A survey of COVID-19 mortality datasets from the United States, Chile, Colombia and Mexico (subject to change).
 
 ## Main Question
 
 <!-- Think about one main question you want to answer based on the data. -->
-1. How does Covid-19 mortality compare in the United States, Brazil and Chile in absolute and in relative numbers from 2019-2022.
+1. COVID-19 Mortality in the Americas: How does Covid-19 mortality compare in the selected nations in South- and North America in absolute and in relative terms from 2020 to 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
 <!-- 2. US Total Population -->
-<!-- 3. Brazil, Chile Covid Mortality -->
-<!-- 5. Brazil, Chile Total Population -->
-<!-- 6. For all above: Data from 2019-2022 (to be evaluated) -->
+<!-- 3. SA Covid Mortality -->
+<!-- 5. SA Total Population -->
+<!-- 6. For all above: Data from 2019-2023 (to be evaluated) -->
 
 <!-- Assumptions: -->
 <!-- 1. The mortality datasets are complete (Most certainly not the case: chaotic nature of pandemic, government inability in a crisis, difficulty of determining of whether someone died of covid or with covid, politics or the incentive for governments to keep reported numbers low as to avoid panic and to underscore the effectiveness of their pandemic measures and management.) -->
 <!-- 2. Population data sets are up-to-date and complete (Difficulty of determining the exact population of a country (US f.e.))-->
 
-2. How does Covid-19 mortality in hispanic countries compare to Covid-19 mortality in the hispanic US population
+2. How does COVID-19 mortality in hispanic countries compared to COVID-19 mortality in the hispanic US population from 2020 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
 <!-- 2. US Covid Mortality of Hispanics -->
@@ -33,7 +33,7 @@ A survey of COVID-19 mortality datasets from the United States, Chile and Brazil
 <!-- 2. Mortality Datasets are complete -->
 <!-- 3. Population data sets are accurate -->
 
-2. How did Covid-19 mortality change in the selected nations <!-- "cohorts" fancy --> from 2019-2022.
+2. How did COVID-19 mortality develop in the selected nations from 2020 to 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
 <!-- 3. Brazil, Chile Covid Mortality -->
@@ -52,56 +52,65 @@ A survey of COVID-19 mortality datasets from the United States, Chile and Brazil
 
 <!-- Challenges -->
 <!-- 1. Foreign Language Datasets -->
+<!-- 2. A large number of datasets in different formats, time spans, accuracy and completeness, from various sources and under various licenses -->
 
 ## Description
 
 <!-- Describe your data science project in max. 200 words. Consider writing about why and how you attempt it. -->
-The Covid-19 pandemic has had a lasting effect on the world. It has been an upheaval of economic, political and societal realities larger than most have seen in their lifetimes. This is not least due to the large number of lifes the virus has claimed.
+The COVID-19 pandemic has had a lasting effect on the world. It has been an upheaval of economic, political and societal realities larger than most have ever seen in their lifetimes. This is not least due to the large number of lifes the pandemic has claimed.
 In this project we analyze mortality resulting from the Corona Virus in the Americas. 
 
 We do not perform a comprehensive analysis, rather we exemplify existing trends using open data datasets from a number of North and South American countries, that have been selected for certain quality criteria (such as completeness, accuracy, consistency and timeliness).
-We aim to answer how COVID-19 mortality differs in relative terms between regions on the american continent. 
-Similarly, we compare the progression of mortality in the time-span 2019-2022. Lastly, we explore the difference between COVID-19 mortality in hispanic/latin-american nations and the hispanic community in the United States of America.
+We aim to answer how COVID-19 mortality differs in relative terms between nations on the american continent. 
+Similarly, we compare the progression of mortality in the time-span 2020-2023. Lastly, we explore the difference between COVID-19 mortality in hispanic/latin-american nations and the hispanic community in the United States of America.
 
-The results can give insights into how deadly the pandemic has been in different regions and nations of the Americas. Additionally, they may give an idea of when COVID-19 mortality has peaked or slowed in South and North America.
-As a result, this report can be a starting point for research into questions of how societal wealth and stability, government action or climate correlates to pandemic mortality.
+The results can give insights into how deadly the pandemic has been in different regions and nations of the Americas. Additionally, they may give an idea of when COVID-19 mortality has peaked or slowed in South and North America as well as how it has affected the hispanic community in particular.
+As a result, this report can be a starting point for research into questions of how societal wealth and stability, government action or climate conditions correlate to pandemic mortality.
 
 ## Datasources
 
 <!-- Describe each datasources you plan to use in a section. Use the prefic "DatasourceX" where X is the id of the datasource. -->
 
-### Datasource1: Covid-19 Mortality in Chile 
+### Datasource 1: (Chile) Defunciones por COVID19
 * Metadata URL: https://datos.gob.cl/dataset/defunciones-por-covid19
 * Data URL: https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv
 * Data Type: CSV
 * License: Creative Commons Non-Commercial
 <!-- CC-BY-NC is fine for our purposes according to the forum. -->
 
-Short description of the DataSource.
+Total number of COVID-19 deaths in Chile from 1/2020 to 9/2024 on a daily/case-by-case basis. This dataset is provided by the official government data portal under the Creative Commons NonCommercial license.
 
-### Datasource1: Name 
-* Metadata URL: https://mobilithek.info/offers/-6901989592576801458
-* Data URL: https://raw.githubusercontent.com/od-ms/radverkehr-zaehlstellen/main/100035541/2019-01.csv
+### Datasource 2: (USA) Monthly COVID-19 Death Rates per 100,000 Population by Age Group, Race and Ethnicity, Sex, and Region with Double Stratification
+* Metadata URL: https://data.cdc.gov/Public-Health-Surveillance/Monthly-COVID-19-Death-Rates-per-100-000-Populatio/exs3-hbne/about_data
+* Data URL: https://data.cdc.gov/api/views/exs3-hbne/rows.csv?fourfour=exs3-hbne&cacheBust=1729520760&date=20241106&accessType=DOWNLOAD
 * Data Type: CSV
-* License: 
+* License: Public Domain U.S. Government
 
-Short description of the DataSource.
+Total number of COVID-19 deaths in the USA from 1/2020 to 9/2024 on a monthly basis. Notably, they are grouped by certain characeristics, such as 'Race'. This dataset is provided by the official government agency 'Center for disease control's data portal under Public Domain of the U.S. Government.
 
-### Datasource1: Name 
-* Metadata URL: https://mobilithek.info/offers/-6901989592576801458
-* Data URL: https://raw.githubusercontent.com/od-ms/radverkehr-zaehlstellen/main/100035541/2019-01.csv
+### Datasource 3: (Colombia) Fallecidos COVID en Colombia
+* Metadata URL: https://www.datos.gov.co/en/Salud-y-Protecci-n-Social/Fallecidos-COVID-en-Colombia/jp5m-e7yr/about_data
+* Data URL: https://www.datos.gov.co/api/views/jp5m-e7yr/rows.csv?fourfour=jp5m-e7yr&cacheBust=1705599009&date=20241106&accessType=DOWNLOAD
 * Data Type: CSV
-* License:
+* License: CC BY-SA 4.0: Attribution-ShareAlike 4.0 International
 
-Short description of the DataSource.
+Total number of COVID-19 deaths in Colombia from 3/2020 to 1/2024 on a daily/case-by-case basis. This dataset is a view of a dataset the official government data portal under the Creative Commons Attribution-ShareAlike 4.0 International license.
 
-### Datasource1: World Population Prospects: Population Total
+### Datasource 4: (Mexico) Casos Diarios Estado Nacional Defunciones
+* Metadata URL: https://datos.covid-19.conacyt.mx/
+* Data URL: https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20230625.csv
+* Data Type: CSV
+* License: libre uso MX de los Datos Abiertos del Gobierno de México
+
+Total number of COVID-19 deaths in Mexico from 3/2020 to 6/2023 on a daily basis. This dataset is provided by the official government data portal licensed under the 'libre uso MX de los Datos Abiertos del Gobierno de México' terms.
+
+### Datasource 5: World Population Prospects: Population Total
 * Metadata URL: https://data.worldbank.org/indicator/SP.POP.TOTL?most_recent_year_desc=true
 * Data URL: https://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv
 * Data Type: CSV
 * License: Creative Commons Attribution 4.0 (CC-BY 4.0)
 
-Short description of the DataSource.
+World population numbers for each nation and year from 1960-2023. This data is employed for calculating the mortality relative to total population. This dataset is provided by the World Bank Group (WBG), the worldl's largest development loan bank and an observer at the United Nations. Its open data portal content is licensed under Creative Commons Attribution 4.0 (CC-BY 4.0).
 
 ## Work Packages
 
