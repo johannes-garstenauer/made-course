@@ -102,7 +102,7 @@ Total number of COVID-19 deaths in Colombia from 3/2020 to 1/2024 on a daily/cas
 * Data Type: CSV
 * License: libre uso MX de los Datos Abiertos del Gobierno de México
 
-Total number of COVID-19 deaths in Mexico from 3/2020 to 6/2023 on a daily basis. This dataset is provided by the official government data portal licensed under the 'libre uso MX de los Datos Abiertos del Gobierno de México' terms.
+Total number of COVID-19 deaths in Mexico from 3/2020 to 6/2023 on a daily basis. This dataset is provided by the official government open data portal licensed under the 'libre uso MX de los Datos Abiertos del Gobierno de México' terms.
 
 ### Datasource 5: World Population Prospects: Population Total
 * Metadata URL: https://data.worldbank.org/indicator/SP.POP.TOTL?most_recent_year_desc=true
