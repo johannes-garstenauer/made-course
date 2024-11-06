@@ -70,10 +70,36 @@ As a result, this report can be a starting point for research into questions of 
 
 <!-- Describe each datasources you plan to use in a section. Use the prefic "DatasourceX" where X is the id of the datasource. -->
 
-### Datasource1: ExampleSource
+### Datasource1: Covid-19 Mortality in Chile 
+* Metadata URL: https://datos.gob.cl/dataset/defunciones-por-covid19
+* Data URL: https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv
+* Data Type: CSV
+* License: Creative Commons Non-Commercial
+<!-- CC-BY-NC is fine for our purposes according to the forum. -->
+
+Short description of the DataSource.
+
+### Datasource1: Name 
 * Metadata URL: https://mobilithek.info/offers/-6901989592576801458
 * Data URL: https://raw.githubusercontent.com/od-ms/radverkehr-zaehlstellen/main/100035541/2019-01.csv
 * Data Type: CSV
+* License: 
+
+Short description of the DataSource.
+
+### Datasource1: Name 
+* Metadata URL: https://mobilithek.info/offers/-6901989592576801458
+* Data URL: https://raw.githubusercontent.com/od-ms/radverkehr-zaehlstellen/main/100035541/2019-01.csv
+* Data Type: CSV
+* License:
+
+Short description of the DataSource.
+
+### Datasource1: World Population Prospects: Population Total
+* Metadata URL: https://data.worldbank.org/indicator/SP.POP.TOTL?most_recent_year_desc=true
+* Data URL: https://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv
+* Data Type: CSV
+* License: Creative Commons Attribution 4.0 (CC-BY 4.0)
 
 Short description of the DataSource.
 
