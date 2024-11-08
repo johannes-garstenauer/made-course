@@ -1,4 +1,6 @@
 .DS_Store
 /data/*
 !/data/.gitkeep
-project/datasets/WHO/
+project/datasets_and_eda/WHO/
+project/datasets_and_eda/**/*.csv
+project/datasets_and_eda/**/*.csv:Zone.Identifier
