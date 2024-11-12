@@ -4,3 +4,4 @@
 project/datasets_and_eda/WHO/
 project/datasets_and_eda/**/*.csv
 project/datasets_and_eda/**/*.csv:Zone.Identifier
+/project/.pipelinevenv/
