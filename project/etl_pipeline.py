@@ -35,7 +35,7 @@ import zipfile
 import os
 
 # Configure the logging system
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 @retry(tries=3, delay=30, logger=logging.getLogger())
 def extract_dataset(dataset_url: str, timeout: (int,int) = (None, None), is_zip: bool = False):
@@ -63,13 +63,11 @@ def extract_dataset(dataset_url: str, timeout: (int,int) = (None, None), is_zip:
             csv_files = [f for f in zip_file.namelist() if f.endswith('.csv') and 'metadata' not in f.lower()]
             if len(csv_files) == 1: # Ensure that there is only a singular csv dataset file
                 with zip_file.open(csv_files[0]) as csv_file:
-                    csv_data = csv_file.read().decode('utf-8')
-                    return csv_data
+                    return csv_file.read().decode('utf-8')
             else:
                 raise ValueError(f"Expected exactly one CSV file without 'metadata' in the name, found: {csv_files}")
     else:
         return response.content.decode('utf-8')
-    return response
 
 def extract_into_df(csv_data, separator=",", skiprows=0):
     """
@@ -243,7 +241,8 @@ def filter_rows_by_values(df, column_name, column_values):
         logging.error(f"Unexpected error while filtering rows by '{column_name}' with value '{column_values}': {e}")
         return df
 
-# Function to check if a column name can be converted to a datetime object
+# Helper function to check if a column name can be converted to a datetime object
+# Returns a date object, if a conversion is possible, otherwise returns the column name
 def try_convert_to_datetime(col_name):
     try:
         return pd.to_datetime(col_name, dayfirst=True, errors='raise').date()
@@ -279,7 +278,7 @@ def filter_transform_to_datetime(df, column=None, do_columns=False):
             temp_df[column] = pd.to_datetime(temp_df[column], errors='coerce').dt.date
             logging.info(f"Successfully transformed column '{column}' to datetime")
         else:
-            logging.error("Please provide a meaningful column name")
+            logging.error("Please provide an existing column name")
     except Exception as e:
         logging.error(f"Unexpected error while transforming column '{column}' to datetime: {e}")
         return df
@@ -330,8 +329,8 @@ def load_df_to_csv(df, file_name, file_path='../data/', overwrite=False):
 chile_url = "https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv"
 
 # Extract the dataset into a data-frame
-chile_data = extract_dataset(chile_url, timeout=(200,200))
-chile_df = extract_into_df(chile_data, separator=";")
+data = extract_dataset(chile_url, timeout=(200,200))
+chile_df = extract_into_df(data, separator=";")
 
 # Perform transformations
 # Required fields for analysis are the death-date and the diagnosis (COVID-19)
@@ -367,10 +366,10 @@ usa_df = filter_transform_to_datetime(usa_df, "data_period_start")
 usa_df = filter_transform_to_datetime(usa_df, "data_period_end")
 
 # Drop the rows for which there is no data about covid mortality
-print(f"Before: \n{usa_df.isnull().sum()} \n")
+print(f"Before: \n{usa_df.isnull().sum()}\n")
 for column in usa_df.columns:
     usa_df = filter_handle_missing_values(usa_df, column=column, strategy=Strategy.DROP_ROW)
-print(f"After: \n{usa_df.isnull().sum()} \n")
+print(f"After: \n{usa_df.isnull().sum()}\n")
 
 # Load the transformed dataframe back into a CSV-database file.
 load_df_to_csv(usa_df, file_name='usa_covid_mortality', overwrite=False)
@@ -411,7 +410,7 @@ mexico_df = extract_into_df(data)
 mexico_df = filter_transform_to_datetime(mexico_df, do_columns=True) 
 
 # Keep the nombre column and all date columns as they will all be required for the analysis.
-# For this dataset, having a whitelist is a bit unfortunate, however we work around this issue by generating all column names automatically.
+# For this dataset, having to use a whitelist is a bit unfortunate, however we work around this issue by generating all column names automatically.
 start_date, end_date = '17-03-2020', '23-06-2023' # Define the date range 
 date_range = pd.date_range(start=start_date, end=end_date).date.tolist() # Generate the date range 
 date_range.append("nombre")
@@ -431,8 +430,8 @@ load_df_to_csv(mexico_df, file_name='mexico_covid_mortality', overwrite=False)
 world_pop_url = "https://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=csv"
 
 # Extract the dataset into a data-frame
-data = extract_dataset(world_pop_url, timeout=(200, 200), is_zip=True)
-world_pop_df = extract_into_df(data, skiprows=3)
+data = extract_dataset(world_pop_url, timeout=(200, 200), is_zip=True) # Unzip and identify dataset
+world_pop_df = extract_into_df(data, skiprows=3) # Skip first three rows of metadata to get usable dataframe
 
 # Perform transformations
 # Keep the data for the years 2020-2023 and the country name as an identifier 
