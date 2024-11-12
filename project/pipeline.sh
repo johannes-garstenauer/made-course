@@ -12,7 +12,7 @@
 # requests
 # numpy
 
-# Note: Unfortunately the Data Portal providing the Chilean dataset is currently offline.
+# Note: Unfortunately the Data Portal providing the Chilean dataset is currently offline (24.11.2024).
 # As a result the code for this dataset has been removed from execution.
 
 #######README END########
