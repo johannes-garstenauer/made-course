@@ -387,10 +387,8 @@ else:
     usa_df = filter_transform_to_datetime(usa_df, "data_period_end")
 
     # Drop the rows for which there is no data about covid mortality
-    print(f"Before: \n{usa_df.isnull().sum()}\n")
     for column in usa_df.columns:
         usa_df = filter_handle_missing_values(usa_df, column=column, strategy=Strategy.DROP_ROW)
-    print(f"After: \n{usa_df.isnull().sum()}\n")
 
     # Load the transformed dataframe back into a CSV-database file.
     load_df_to_csv(usa_df, file_name='usa_covid_mortality', overwrite=False)
