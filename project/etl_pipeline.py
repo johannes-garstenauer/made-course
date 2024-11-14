@@ -492,10 +492,8 @@ else:
     assert world_pop_df.isnull().sum().sum() == 0
 
     # Load the transformed dataframe back into a CSV-database file.
-    load_df_to_csv(colombia_df, file_name='world_population_total', overwrite=False)
-
+    load_df_to_csv(world_pop_df, file_name='world_population_total', overwrite=False)
 
 end_time = time.time() # Measure pipeline execution time.
-# Calculate elapsed time
-elapsed_time = end_time - start_time
+elapsed_time = end_time - start_time # Calculate elapsed time
 logging.info(f"Pipeline finished in {elapsed_time:.2f} seconds")
