@@ -1,3 +1,4 @@
+########################################################################################################################
 # For all datasets:
 # 1. Extract dataset: 
 #     - HTTP download into csv file format
@@ -23,6 +24,15 @@
 #         - saving dataset
 # - Throughout it all use logging (on console & also in a log file? use library?) 
 # - Focus on Error Handling
+########################################################################################################################
+########################################################################################################################
+# Content Overview
+# 1. Function Definitions
+#   1.1 For Extract Step in ETL
+#   1.2 For Transform Step in ETL
+#   1.3 For Load Step in ETL
+# 2. Pipeline with 5 Datasets
+########################################################################################################################
 
 import pandas as pd
 import logging
@@ -134,7 +144,6 @@ def filter_drop_columns(df, white_list):
         logging.error(f"Unexpected error: {e}")
         return df
 
-
 class Strategy(Enum):
     """
     Each enumeration represents a strategy for handling missing values of pd.DataFrame
@@ -242,13 +251,21 @@ def filter_rows_by_values(df, column_name, column_values):
         logging.error(f"Unexpected error while filtering rows by '{column_name}' with value '{column_values}': {e}")
         return df
 
-# Helper function to check if a column name can be converted to a datetime object
-# Returns a date object, if a conversion is possible, otherwise returns the column name
-def try_convert_to_datetime(col_name):
+def _try_convert_to_datetime(column_name):
+    """
+    Helper function to check whether a column name can be converted to a datetime object.
+    Returns a date object, if a conversion is possible, otherwise returns the column name.
+
+    Parameters:
+    column_name (str): The column name to be checked for conversion into a datetime object.
+
+    Returns:
+    pd.DataTime/str: A date object, if a conversion is possible, otherwise returns the column name.
+    """
     try:
-        return pd.to_datetime(col_name, dayfirst=True, errors='raise').date()
+        return pd.to_datetime(column_name, dayfirst=True, errors='raise').date()
     except ValueError:
-        return col_name
+        return column_name
 
 
 def filter_transform_to_datetime(df, column=None, do_columns=False):
@@ -271,7 +288,7 @@ def filter_transform_to_datetime(df, column=None, do_columns=False):
         if do_columns:
             
             # Transform columns that can be parsed as datetime objects
-            new_columns = {col: try_convert_to_datetime(col) for col in temp_df.columns}
+            new_columns = {col: _try_convert_to_datetime(col) for col in temp_df.columns}
             temp_df.rename(columns=new_columns, inplace=True)
             logging.info(f"Successfully transformed {len(new_columns)} column names to datetime")
         elif column is not None:
@@ -324,10 +341,13 @@ def load_df_to_csv(df, file_name, file_path='../data/', overwrite=False):
     except Exception as e:
         logging.error(f"Unexpected error while saving the DataFrame to {full_path}: {e}")
 
+########################################################################################################################
+################ PIPELINE START ########################################################################################
+########################################################################################################################
+
 # # Applying the ETL Pipeline to the datasets
 skip = False # Flag indicating whether the next dataset is to be skipped, for instance, when the data download was unsuccessful.
 start_time = time.time() # Measure the pipeling execution time.
-
 
 # ### Chile Covid Mortality Dataset
 # TODO: Note: Unfortunately, the data portal providing this dataset is currently (12.11.2024) offline.
@@ -344,8 +364,8 @@ except Exception as e:
 if skip:
     logging.warning("Skipping dataset")
     skip = False # Reset the flag indicating whether the next dataset is to be skipped.
-else:
-    # Perform transformations
+else: # Perform transformations
+
     # Required fields for analysis are the death-date and the diagnosis (COVID-19)
     chile_df = filter_drop_columns(chile_df, ["FECHA_DEF", "DIAG1"])
 
@@ -373,8 +393,7 @@ except Exception as e:
 if skip:
     logging.warning("Skipping dataset")
     skip = False # Reset the flag indicating whether the next dataset is to be skipped.
-else:
-    # Perform transformations
+else: # Perform transformations
 
     # This dataset has duplicate values, therefore drop all rows for the different regions in the US and keep only the total US rows.
     usa_df = filter_rows_by_values(usa_df, "jurisdiction_residence", "United States")
@@ -394,7 +413,6 @@ else:
     load_df_to_csv(usa_df, file_name='usa_covid_mortality', overwrite=False)
 
 # ### Colombia Covid Mortality Dataset
-
 colombia_url = "https://www.datos.gov.co/api/views/jp5m-e7yr/rows.csv?fourfour=jp5m-e7yr&cacheBust=1705599009&date=20241106&accessType=DOWNLOAD"
 
 try:
@@ -407,8 +425,7 @@ except Exception as e:
 if skip:
     logging.warning("Skipping dataset")
     skip = False # Reset the flag indicating whether the next dataset is to be skipped.
-else:
-    # Perform transformations
+else: # Perform transformations
 
     # Keep only required fields for analysis
     colombia_df = filter_drop_columns(colombia_df, ["Fecha de muerte", "Recuperado"])
@@ -426,7 +443,6 @@ else:
 # ### Mexico Covid Mortality Dataset
 mexico_url = "https://datos.covid-19.conacyt.mx/Downloads/Files/Casos_Diarios_Estado_Nacional_Defunciones_20230625.csv"
 
-
 try:
     # Extract the dataset into a data-frame
     data = extract_dataset(mexico_url, timeout=(200, 200))
@@ -438,8 +454,7 @@ except Exception as e:
 if skip:
     logging.warning("Skipping dataset")
     skip = False # Reset the flag indicating whether the next dataset is to be skipped.
-else:
-    # Perform transformations
+else: # Perform transformations
 
     # Transform the date column names into datetime format
     mexico_df = filter_transform_to_datetime(mexico_df, do_columns=True)
@@ -475,8 +490,8 @@ except Exception as e:
 if skip:
     logging.warning("Skipping dataset")
     skip = False # Reset the flag indicating whether the next dataset is to be skipped.
-else:
-    # Perform transformations
+else: # Perform transformations
+
     # Keep the data for the years 2020-2023 and the country name as an identifier
     white_list = [str(x) for x in range(2020, 2024)]
     white_list.append("Country Name")
