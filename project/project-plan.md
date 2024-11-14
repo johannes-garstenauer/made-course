@@ -18,7 +18,7 @@ A survey of COVID-19 mortality datasets from the United States, Chile, Colombia 
 <!-- 1. The mortality datasets are complete (Most certainly not the case: chaotic nature of pandemic, government inability in a crisis, difficulty of determining of whether someone died of covid or with covid, politics or the incentive for governments to keep reported numbers low as to avoid panic and to underscore the effectiveness of their pandemic measures and management.) -->
 <!-- 2. Population data sets are up-to-date and complete (Difficulty of determining the exact population of a country (US f.e.))-->
 
-2. How does COVID-19 mortality in hispanic countries compared to COVID-19 mortality in the hispanic US population from 2020 2023?
+2. How did COVID-19 mortality develop in the selected nations from 2020 to 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
 <!-- 2. US Covid Mortality of Hispanics -->
@@ -32,7 +32,7 @@ A survey of COVID-19 mortality datasets from the United States, Chile, Colombia 
 <!-- 2. Mortality Datasets are complete -->
 <!-- 3. Population data sets are accurate -->
 
-2. How did COVID-19 mortality develop in the selected nations from 2020 to 2023?
+3. How does COVID-19 mortality in hispanic countries compare to COVID-19 mortality in the hispanic US population from 2020 to 2023?
 <!-- Requires: -->
 <!-- 1. US Covid Mortality -->
 <!-- 3. Brazil, Chile Covid Mortality -->
