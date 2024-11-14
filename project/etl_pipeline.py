@@ -326,6 +326,7 @@ def load_df_to_csv(df, file_name, file_path='../data/', overwrite=False):
 
 # # Applying the ETL Pipeline to the datasets
 skip = False # Flag indicating whether the next dataset is to be skipped, for instance, when the data download was unsuccessful.
+start_time = time.time() # Measure the pipeling execution time.
 
 
 # ### Chile Covid Mortality Dataset
@@ -493,4 +494,8 @@ else:
     # Load the transformed dataframe back into a CSV-database file.
     load_df_to_csv(colombia_df, file_name='world_population_total', overwrite=False)
 
-logging.info("Pipeline finished")
+
+end_time = time.time() # Measure pipeline execution time.
+# Calculate elapsed time
+elapsed_time = end_time - start_time
+logging.info(f"Pipeline finished in {elapsed_time:.2f} seconds")
