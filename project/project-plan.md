@@ -68,6 +68,8 @@ As a result, this report can be a starting point for research into questions of 
 ## Datasources
 
 ### Datasource 1: (Chile) Defunciones por COVID19
+:warning:It appears like this open data portal is currently *offline*:warning:
+
 * Metadata URL: https://datos.gob.cl/dataset/defunciones-por-covid19
 * Data URL: https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv
 * Data Type: CSV
