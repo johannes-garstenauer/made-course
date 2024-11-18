@@ -78,23 +78,22 @@ block GdpPerCapitaDeleter oftype ColumnDeleter {
 
 
 block BondIssuanceTableInterpreter oftype TableInterpreter {
-   header: true;
+   header: false;
    columns: [
      //"Country Code" oftype ISO_3,
      //"Bond Issuance Share" oftype ZeroOneInterval
-     "ISO3" oftype CountryCodeAlpha3,
-     "Share of government sustainable
-bonds" oftype ZeroOneInterval
+     "Country Code" oftype CountryCodeAlpha3,
+     "Bond Issuance Share" oftype ZeroOneInterval
    ];
 } 
 
 block GdpPerCapitaTableInterpreter oftype TableInterpreter {
-   header: true;
+   header: false;
    columns: [
     //"Country Code" oftype ISO_3,
     //"GDP per Capita" oftype PositiveDecimal,
-    "ISO3" oftype CountryCodeAlpha3,
-    "GDP per capita (US$, thousands)" oftype decimal,
+    "Country Code" oftype CountryCodeAlpha3,
+    "GDP per Capita" oftype decimal,
    ];
 } 
 
