@@ -1,0 +1,161 @@
+
+composite blocktype FiguresExtractor {
+    property url oftype text;
+
+    // Input and outputs
+    input inputName oftype None;
+    output outputName oftype Sheet;
+
+    // Pipeline definition from input, over blocks defined later, to output
+    inputName
+        ->FileExtractor
+        ->FileXLSXInterpreter
+        ->FiguresSheetPicker
+        ->TableSelector
+        ->outputName;
+
+    // Block definitions using values from properties by name
+    block FileExtractor oftype HttpExtractor { url: url; }
+    block FileXLSXInterpreter oftype XLSXInterpreter {}
+    block FiguresSheetPicker oftype SheetPicker { sheetName: 'Figure S5.1.2'; }
+    block TableSelector oftype CellRangeSelector { select: range P2:S45; }
+}
+
+// TODO: Renaming dont Work -> columns arent matched correctly
+// PositiveDecimal doesnt't work -> does it even matter for the tests? lets see
+
+
+pipeline FiguresPipeline {
+
+
+    FiguresExtractor 
+        // Do BondIssuance
+        -> BondIssuanceDeleter
+        -> BondIssuanceTableInterpreter
+        -> BondIssuanceLoader
+        ;
+
+    FiguresExtractor 
+        // Do GdpPerCapita
+        -> GdpPerCapitaDeleter
+        -> GdpPerCapitaTableInterpreter
+        -> GdpPerCapitaLoader
+        ;
+
+block FiguresExtractor oftype FiguresExtractor {
+    url: "https://thedocs.worldbank.org/en/doc/7d852628d96b9411d43e5d36d5dff941-0050062022/original/Graphs-Chapter-5-02082022.xlsx";
+}
+
+/* DEPRECATED
+// Duplicate, which is silly 
+block FiguresXLSXInterpreter oftype XLSXInterpreter { }
+block FiguresXLSXInterpreter2 oftype XLSXInterpreter { }
+
+block FiguresSheetPicker oftype SheetPicker {
+    sheetName: 'Figure S5.1.2';
+}
+block FiguresSheetPicker2 oftype SheetPicker {
+    sheetName: 'Figure S5.1.2';
+}
+
+block TableSelector oftype CellRangeSelector {
+    select: range P2:S45;
+}
+block TableSelector2 oftype CellRangeSelector {
+    select: range P2:S45;
+}
+*/
+
+
+block BondIssuanceDeleter oftype ColumnDeleter {
+   delete: [column B, column C];
+}
+
+block GdpPerCapitaDeleter oftype ColumnDeleter {
+   delete: [column B, column D];
+}
+
+
+
+block BondIssuanceTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+     //"Country Code" oftype ISO_3,
+     //"Bond Issuance Share" oftype ZeroOneInterval
+     "ISO3" oftype CountryCodeAlpha3,
+     "Share of government sustainable
+bonds" oftype ZeroOneInterval
+   ];
+} 
+
+block GdpPerCapitaTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+    //"Country Code" oftype ISO_3,
+    //"GDP per Capita" oftype PositiveDecimal,
+    "ISO3" oftype CountryCodeAlpha3,
+    "GDP per capita (US$, thousands)" oftype decimal,
+   ];
+} 
+
+
+
+// DEPRECATED
+/*
+block FiguresTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+     "Country Code" oftype ISO_3,
+     "Economy" oftype text,
+     "GDP per Capita" oftype PositiveDecimal,
+     "Bond Issuance Share" oftype ZeroOneInterval
+   ];
+} 
+*/
+
+/* DEPRECATED
+block FiguresTableInterpreter oftype TableInterpreter {
+   header: true;
+   columns: [
+     "ISO3" oftype text,
+     "Economy" oftype text,
+     "GDP per capita (US$, thousands)" oftype decimal,
+     "Share of government sustainable
+bonds" oftype decimal
+   ];
+} 
+*/
+
+
+// Validate rows
+    valuetype PositiveDecimal oftype decimal {
+        constraints: [DecimalConstraint];
+    }
+
+    constraint DecimalConstraint oftype RegexConstraint {
+        regex:  /^\d*\.?\d+$/;
+    }
+
+    valuetype ZeroOneInterval oftype decimal {
+        constraints: [ZeroOneIntervalConstraint];
+    }
+
+    constraint ZeroOneIntervalConstraint on decimal: value >= 0 and value <= 1;
+
+    /*
+    constraint ZeroOneIntervalConstraint oftype RegexConstraint {
+        regex:  /^(0(\.\d+)?|1(\.0+)?)$/;
+    }
+    */
+
+block BondIssuanceLoader oftype SQLiteLoader {
+    table: "bondIssuance";
+    file: "./country-stats.sqlite";
+}
+
+block GdpPerCapitaLoader oftype SQLiteLoader {
+    table: "gdpPerCapita";
+    file: "./country-stats.sqlite";
+}
+
+}

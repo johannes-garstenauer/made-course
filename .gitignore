@@ -5,3 +5,14 @@ project/datasets_and_eda/WHO/
 project/datasets_and_eda/**/*.csv
 project/datasets_and_eda/**/*.csv:Zone.Identifier
 /project/.pipelinevenv/
+/project/datasets_and_eda/figures/
+project/pipelinevenv/bin/python
+project/pipelinevenv/bin/python3
+project/pipelinevenv/bin/python3.12
+project/pipelinevenv/pyvenv.cfg
+.idea/made-course.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/profiles_settings.xml
+project/pipelinevenv/*
