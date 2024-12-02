@@ -1,0 +1,92 @@
+pipeline TemperaturePipeline {
+
+    TemperatureExtractor
+        -> TemperatureArchiveInterpreter
+        -> TemperatureFilePicker
+        -> TemperatureInterpreter
+        -> TemperatureCSVInterpreter
+        -> TemperatureColumnDeleter
+        -> TemperatureTableInterpreter
+        -> CelsiusToFahrenheitTransformer1
+        -> CelsiusToFahrenheitTransformer2
+        ->TemperatureLoader;
+
+
+    block TemperatureExtractor oftype HttpExtractor {
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    block TemperatureArchiveInterpreter oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+
+    block TemperatureFilePicker oftype FilePicker {
+        path: "/data.csv";
+    }
+
+    block TemperatureInterpreter oftype TextFileInterpreter { }
+
+    block TemperatureCSVInterpreter oftype CSVInterpreter { 
+        delimiter: ";";
+    }
+
+    // Delete intermediate columns in order to match them below
+    // ]e (temp in c) -> FGHI delete next 4
+    block TemperatureColumnDeleter oftype ColumnDeleter {
+        delete: [column F, column G, column H, column I];
+    }
+
+
+    block TemperatureTableInterpreter oftype TableInterpreter {
+        header: false;
+        columns: [
+            "id" oftype integer,
+            "producer" oftype text,
+            "model" oftype text,
+            "month" oftype MonthType,
+            "temperature" oftype decimal,
+            "battery_temperature" oftype decimal
+        ];
+    }
+  
+    transform CelsiusToFahrenheit {
+        from Celsius oftype decimal;
+        to Fahrenheit oftype decimal;
+
+        Fahrenheit: (Celsius * 9/5) + 32;
+    }
+
+    block CelsiusToFahrenheitTransformer1 oftype TableTransformer {
+        inputColumns: ['temperature'];
+        outputColumn: 'temperature';
+        uses: CelsiusToFahrenheit;
+    }
+
+    block CelsiusToFahrenheitTransformer2 oftype TableTransformer {
+        inputColumns: ['battery_temperature'];
+        outputColumn: 'battery_temperature';
+        uses: CelsiusToFahrenheit;
+    }
+
+    constraint idOver0Constraint on integer:
+        value > 0;
+
+    valuetype MonthType oftype integer {
+        constraints: [validMonthConstraint];
+    }
+    
+    constraint validMonthConstraint oftype RangeConstraint {
+        lowerBound: 1;
+        lowerBoundInclusive: true;
+        upperBound: 12;
+        upperBoundInclusive: true;
+    }
+
+    constraint temperatureRange on decimal:
+        value > -1000 and value < 3000;
+
+    block TemperatureLoader oftype SQLiteLoader {
+        table: "temperatures";
+        file: "./temperatures.sqlite";
+    }
+}
