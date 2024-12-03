@@ -53,7 +53,6 @@ skip = False # Flag indicating whether the next dataset is to be skipped, for in
 start_time = time.time() # Measure the pipeling execution time.
 
 # ### Chile Covid Mortality Dataset
-# TODO: Note: Unfortunately, the data portal providing this dataset is currently (12.11.2024) offline.
 chile_url = "https://datos.gob.cl/dataset/8982a05a-91f7-422d-97bc-3eee08fde784/resource/8e5539b7-10b2-409b-ae5a-36dae4faf817/download/defunciones_covid19_2020_2024.csv"
 
 try:
