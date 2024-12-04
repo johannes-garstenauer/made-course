@@ -51,7 +51,6 @@ class Strategy(Enum):
     BFILL = auto()
     FFILL = auto()
     DROP_ROW = auto()
-    LINEAR_INTERPOLATION = auto()
     MODE = auto()
     MEDIAN = auto()
 
@@ -80,20 +79,16 @@ def filter_handle_missing_values(df, column, threshold=0, strategy=Strategy.DROP
                 (f"Column '{column}' has {missing_ratio * 100:.2f}% missing values, applying {strategy.name} strategy")
 
             if strategy == Strategy.BFILL:
-                temp_df[column] = temp_df[column].bfill()
+                temp_df[column] = temp_df[column].bfill().ffill()
                 logging.info(f"Applied back fill strategy to column '{column}'")
 
             elif strategy == Strategy.FFILL:
-                temp_df[column] = temp_df[column].ffill()
+                temp_df[column] = temp_df[column].bfill().ffill()
                 logging.info(f"Applied forward fill strategy to column '{column}'")
 
             elif strategy == Strategy.DROP_ROW:
                 temp_df = temp_df.dropna(subset=[column])
                 logging.info(f"Dropped rows with missing values in column '{column}'")
-
-            elif strategy == Strategy.LINEAR_INTERPOLATION:
-                temp_df[column] = temp_df[column].interpolate(method='linear')
-                logging.info(f"Applied linear interpolation to column '{column}'")
 
             elif strategy == Strategy.MODE:
                 mode_value = temp_df[column].mode()[0]
