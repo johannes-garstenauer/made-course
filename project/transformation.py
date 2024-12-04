@@ -80,11 +80,11 @@ def filter_handle_missing_values(df, column, threshold=0, strategy=Strategy.DROP
                 (f"Column '{column}' has {missing_ratio * 100:.2f}% missing values, applying {strategy.name} strategy")
 
             if strategy == Strategy.BFILL:
-                temp_df[column] = temp_df[column].fillna(method='bfill')
+                temp_df[column] = temp_df[column].bfill()
                 logging.info(f"Applied back fill strategy to column '{column}'")
 
             elif strategy == Strategy.FFILL:
-                temp_df[column] = temp_df[column].fillna(method='ffill')
+                temp_df[column] = temp_df[column].ffill()
                 logging.info(f"Applied forward fill strategy to column '{column}'")
 
             elif strategy == Strategy.DROP_ROW:
@@ -195,6 +195,12 @@ def filter_transform_to_datetime(df, column=None, do_columns=False):
             logging.info(f"Successfully transformed {len(new_columns)} column names to datetime")
         elif column is not None:
             logging.info(f"Transforming column '{column}' to datetime")
+
+            # Suppress unnecessary warning here
+            import warnings
+            warnings.filterwarnings("ignore", category=UserWarning)
+            temp_df[column] = pd.to_datetime(temp_df[column], errors='coerce').dt.date
+
             temp_df[column] = pd.to_datetime(temp_df[column], errors='coerce').dt.date
             logging.info(f"Successfully transformed column '{column}' to datetime")
         else:
