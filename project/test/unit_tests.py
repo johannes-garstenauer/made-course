@@ -1,12 +1,9 @@
 import unittest
 
 import numpy as np
-import pytest
-# TODO install pytest?
-
-import pandas as pd
-from project.tests import test_helper
 from project.transformation import *
+from project.extraction import *
+from project.test import test_helper
 
 
 class MyTestCase(unittest.TestCase):
@@ -15,7 +12,6 @@ class MyTestCase(unittest.TestCase):
     def setUpClass(self):
         self.num_rows = 1000
         self.df = test_helper.create_mock_dataframe(1000)
-
 
 
     def test_filter_transform_to_datetime(self):
@@ -36,13 +32,17 @@ class MyTestCase(unittest.TestCase):
         # Filter all rows where diag is not 'U071'
         transformed_df = filter_rows_by_values(self.df, 'diag', 'U071')
 
-        # Assert that there are about 90% of the rows left (with a margin of 1%)
-        self.assertAlmostEqual(len(transformed_df), np.floor(self.num_rows * 0.9), delta=self.num_rows * 0.01)
+        # Assert that there are about 90% of the rows left (with a margin of 5%, due to randomness in mock dataset creation)
+        self.assertAlmostEqual(len(transformed_df), np.floor(self.num_rows * 0.9), delta=self.num_rows * 0.05)
 
     def test_filter_handle_missing_values(self):
 
         # Check that the number of missing values before filtering is greater than 0
         self.assertGreater(self.df['id'].isnull().sum(), 0)
+
+        # Insert NaN into the first and last row of 'id' column in order to test the BFILL and FFILL strategies edge cases.
+        self.df.iloc[0, self.df.columns.get_loc('id')] = np.nan
+        self.df.iloc[-1, self.df.columns.get_loc('id')] = np.nan
 
         # Remove all missing values in the id column
         for strategy in Strategy:
