@@ -1,9 +1,8 @@
 import unittest
 
-import numpy as np
-from project.transformation import *
-from project.extraction import *
-from project.test import test_helper
+#from project import test_helper
+from transformation import *
+from test_helper import *
 
 
 class MyTestCase(unittest.TestCase):
@@ -11,7 +10,7 @@ class MyTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.num_rows = 1000
-        self.df = test_helper.create_mock_dataframe(1000)
+        self.df = create_mock_dataframe(1000)
 
 
     def test_filter_transform_to_datetime(self):

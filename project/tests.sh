@@ -48,7 +48,11 @@ cleanup_system_test() {
 
 run_unit_tests() {
     echo "Executing unit tests..."
-    PYTHONPATH=$(pwd)/.. python3 -m unittest discover -s test -p 'unit_tests.py' || error_display "Unit tests failed."
+    # Get the directory of this script
+    SCRIPT_DIR=$(dirname "$0")
+    #PYTHONPATH=$(pwd)/.. python3 -m unittest discover -s test -p 'unit_tests.py' || error_display "Unit tests failed."
+    #python3 -m unittest discover -s "" -p 'unit_tests.py' || error_display "Unit tests failed."
+    python3 -m unittest discover -s "$SCRIPT_DIR" -p 'unit_tests.py' || error_display "Unit tests failed."
     echo "-------------------------------------------------------------------------"
 }
 
