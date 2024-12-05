@@ -1,6 +1,5 @@
 import unittest
 
-#from project import test_helper
 from transformation import *
 from test_helper import *
 
