@@ -1,0 +1,6 @@
+# Required packages
+unittest
+pandas
+retry
+requests
+numpy
