@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
-    - name: Test with pytest
+    - name: Run unit and system tests script
       run: |
         chmod +x project/tests.sh
         ./project/tests.sh
