@@ -21,8 +21,11 @@
 
 #######README END########
 
+# Get the directory of this script
+SCRIPT_DIR=$(dirname "$0")
+
 # Path to database files
-OUTPUT_DATABASES=("../data/chile_covid_mortality.csv" "../data/colombia_covid_mortality.csv" "../data/usa_covid_mortality.csv" "../data/world_population_total.csv" "../data/mexico_covid_mortality.csv")
+OUTPUT_DATABASES=("$SCRIPT_DIR/../data/chile_covid_mortality.csv" "$SCRIPT_DIR/../data/colombia_covid_mortality.csv" "$SCRIPT_DIR/../data/usa_covid_mortality.csv" "$SCRIPT_DIR/../data/world_population_total.csv" "$SCRIPT_DIR/../data/mexico_covid_mortality.csv")
 
 # Display an error message and exit
 error_display() {
@@ -48,8 +51,6 @@ cleanup_system_test() {
 
 run_unit_tests() {
     echo "Executing unit tests..."
-    # Get the directory of this script
-    SCRIPT_DIR=$(dirname "$0")
     #PYTHONPATH=$(pwd)/.. python3 -m unittest discover -s test -p 'unit_tests.py' || error_display "Unit tests failed."
     #python3 -m unittest discover -s "" -p 'unit_tests.py' || error_display "Unit tests failed."
     python3 -m unittest discover -s "$SCRIPT_DIR" -p 'unit_tests.py' || error_display "Unit tests failed."
@@ -59,7 +60,7 @@ run_unit_tests() {
 run_pipeline() {
     echo "--------------------------------------------------------------------------"
     echo "Executing the complete ETL pipeline..."
-    python3 etl_pipeline.py || error_display "Pipeline execution failed."
+    python3 "$SCRIPT_DIR/etl_pipeline.py" || error_display "Pipeline execution failed."
 }
 
 validate_output() {
@@ -75,7 +76,8 @@ validate_output() {
 }
 
 main() {
-    echo "FOUND"
+    echo "hi"
+    echo "$(SCRIPT_DIR)"
     run_unit_tests
     cleanup_system_test
     run_pipeline

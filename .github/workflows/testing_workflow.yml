@@ -30,5 +30,6 @@ jobs:
         
     - name: Run unit and system tests script
       run: |
+        cd project
         chmod +x project/tests.sh
         ./project/tests.sh
