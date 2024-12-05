@@ -71,6 +71,7 @@ validate_output() {
 }
 
 main() {
+    echo "FOUND"
     run_unit_tests
     cleanup_system_test
     run_pipeline
