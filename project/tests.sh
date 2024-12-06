@@ -2,6 +2,9 @@
 
 #######README#############
 
+# Important!
+# If this script does not work, makes sure to execute it from inside of the /project directory.
+
 # Actions:
 # Execute unit tests
 # Perform system test on ETL Pipeline
