@@ -1,0 +1,215 @@
+pipeline GTFSPipeline {
+
+    GTFSExtractor
+        -> GTFSArchiveInterpreter
+        -> GTFSFilePicker
+        -> GTFSFileInterpreter
+        -> GTFSCSVInterpreter
+        -> GTFSColumnDeleter
+        -> GTFSTableInterpreter
+        
+        -> FrontQuotationMarkTransformer
+        -> BackQuotationMarkTransformer
+        -> FrontQuotationMarkTransformer2
+        -> BackQuotationMarkTransformer2
+        -> FrontQuotationMarkTransformer3
+        -> BackQuotationMarkTransformer3
+        -> FrontQuotationMarkTransformer4
+        -> BackQuotationMarkTransformer4
+        -> TempLoader;
+        
+        TempFileExtractor
+        -> TempFileInterpreter
+        -> TempCSVInterpreter
+        -> DecimalIntegerTableInterpreter
+        -> GTFSLoader;
+
+        // TODO composite block for extraction file -> sheet
+        // todo composite block for transformers
+
+    block GTFSExtractor oftype HttpExtractor {
+        url: "https://gtfs.rhoenenergie-bus.de/GTFS.zip";
+    }
+
+    block GTFSArchiveInterpreter oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+
+    block GTFSFilePicker oftype FilePicker {
+        path: "/stops.txt";
+    }
+
+    block GTFSFileInterpreter oftype TextFileInterpreter { }
+
+    block GTFSCSVInterpreter oftype CSVInterpreter { }
+    
+    // Delete intermediate columns in order to match them below
+    // B, D
+    block GTFSColumnDeleter oftype ColumnDeleter {
+        delete: [column B, column D];
+    }
+
+    block GTFSTableInterpreter oftype TableInterpreter {
+        header: false; // true doesnt produce any rows for some reason
+        columns: [
+            "stop_id" oftype text, //integer,
+            "stop_name" oftype text,
+            "stop_lat" oftype text, //decimal,
+            "stop_lon" oftype text, //decimal,
+            "zone_id" oftype text //Zone1925 //integer
+        ];
+    }
+
+
+    // Filter data: keep stops from zone 1925
+    /**
+    valuetype Zone1925 oftype text {
+        constraints: [ZoneFilterConstraint];
+    }
+    
+    constraint ZoneFilterConstraint oftype AllowlistConstraint {
+        allowlist: ["1925"];
+    } 
+    */
+    
+
+    // 1. Remove quotation marks
+    // 2. Load to file
+    // 3. Reread to sheet
+    // 2. Read as decimal in table interpreter+
+
+    // TODO Will that mess up scoring?
+
+
+    transform RemoveFrontQuotationMarks {
+        from TextLatitude oftype text;
+        to DecimalLatitude oftype text;
+
+        // Performs action only on first match
+        DecimalLatitude: TextLatitude replace /^"|"$/ with "";
+    }
+
+    transform RemoveBackQuotationMarks {
+        from TextLatitude oftype text;
+        to DecimalLatitude oftype text;
+
+        // without a second " the IDE interprets the rest of the code as string
+        // in actuality you'd only need the first part of the regex but if it works it works...
+        DecimalLatitude: TextLatitude replace /"$|^"/ with "";
+    }
+
+    block FrontQuotationMarkTransformer oftype TableTransformer {
+        inputColumns: ['stop_lat'];
+        outputColumn: 'stop_lat';
+        uses: RemoveFrontQuotationMarks;
+    }
+
+    block BackQuotationMarkTransformer oftype TableTransformer {
+        inputColumns: ['stop_lat'];
+        outputColumn: 'stop_lat';
+        uses: RemoveBackQuotationMarks;
+    }
+
+    block FrontQuotationMarkTransformer2 oftype TableTransformer {
+        inputColumns: ['stop_lon'];
+        outputColumn: 'stop_lon';
+        uses: RemoveFrontQuotationMarks;
+    }
+
+    block BackQuotationMarkTransformer2 oftype TableTransformer {
+        inputColumns: ['stop_lon'];
+        outputColumn: 'stop_lon';
+        uses: RemoveBackQuotationMarks;
+    }
+
+    block FrontQuotationMarkTransformer3 oftype TableTransformer {
+        inputColumns: ['zone_id'];
+        outputColumn: 'zone_id';
+        uses: RemoveFrontQuotationMarks;
+    }
+
+    block BackQuotationMarkTransformer3 oftype TableTransformer {
+        inputColumns: ['zone_id'];
+        outputColumn: 'zone_id';
+        uses: RemoveBackQuotationMarks;
+    }
+
+    block FrontQuotationMarkTransformer4 oftype TableTransformer {
+        inputColumns: ['stop_id'];
+        outputColumn: 'stop_id';
+        uses: RemoveFrontQuotationMarks;
+    }
+
+    block BackQuotationMarkTransformer4 oftype TableTransformer {
+        inputColumns: ['stop_id'];
+        outputColumn: 'stop_id';
+        uses: RemoveBackQuotationMarks;
+    }
+
+
+    block TempLoader oftype CSVFileLoader {
+        file: "./temp.csv";
+    }
+
+     block TempFileExtractor oftype LocalFileExtractor {
+        filePath: "temp.csv";
+    }
+
+    block TempFileInterpreter oftype TextFileInterpreter { }
+
+    block TempCSVInterpreter oftype CSVInterpreter { }
+
+    // Read the actual correct datatypes
+    block DecimalIntegerTableInterpreter oftype TableInterpreter {
+        header: true; // true doesnt produce any rows for some reason
+        columns: [
+            "stop_id" oftype integer,
+            "stop_name" oftype text,
+            "stop_lat" oftype Coordinate,
+            "stop_lon" oftype Coordinate,
+            "zone_id" oftype Zone1925
+        ];
+    }
+
+    // Filter
+    valuetype Zone1925 oftype integer {
+        constraints: [ZoneFilterConstraint];
+    }
+    
+    constraint ZoneFilterConstraint oftype RangeConstraint {
+        lowerBound: 1925;
+        lowerBoundInclusive: true;
+        upperBound: 1926;
+        upperBoundInclusive: false;
+    } 
+
+    // Validate
+    // stop_name -> text maintaining german umlauts
+    // are they not usually maintaned? -> Yes that stays
+
+    //stop_lat/stop_lon must be a geographic coordinates 
+    //between -90 and 90, including upper/lower bounds
+    //constraint NinetyIntervalConstraint on decimal: value >= 0.0 and value <= 1.0;
+    valuetype Coordinate oftype decimal {
+        constraints: [NinetyIntervalConstraint];
+    }
+    
+    constraint NinetyIntervalConstraint oftype RangeConstraint {
+        lowerBound: -90.0;
+        lowerBoundInclusive: true;
+        upperBound: 90.0;
+        upperBoundInclusive: true;
+    } 
+
+    // Drop rows containing invalid data
+    //-> how does that occur in jayvee?
+    // what if datatype does not fit? -> i guess row is dropped automatically
+    // what if there is a missing value? -> dropped automatically? analyze in python
+
+    block GTFSLoader oftype SQLiteLoader {
+        table: "stops";
+        file: "./gtfs.sqlite";
+    }
+
+    //TODO rm temp?
+}
