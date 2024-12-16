@@ -1,11 +1,5 @@
 pipeline GTFSPipeline {
 
-
-    // Problem: how to transform dataypes
-    
-    // TODO how to get from block -> table
-    // Or how to change datatypes elegantly?
-
     GTFSExtractor
         -> GTFSArchiveInterpreter
         -> GTFSFilePicker
@@ -13,34 +7,8 @@ pipeline GTFSPipeline {
         -> GTFSCSVInterpreter
         -> GTFSColumnDeleter
         -> GTFSTableInterpreter
-        /**
-        -> FrontQuotationMarkTransformer
-        -> BackQuotationMarkTransformer
-        -> FrontQuotationMarkTransformer2
-        -> BackQuotationMarkTransformer2
-        -> FrontQuotationMarkTransformer3
-        -> BackQuotationMarkTransformer3
-        -> FrontQuotationMarkTransformer4
-        -> BackQuotationMarkTransformer4
-        **/
-        //-> TempLoader;
+
         -> GTFSLoader;
-
-        // Temp is only created when the second pipeline isnt executed. Why?
-        // Here it works? https://jvalue.github.io/jayvee/docs/user/examples/workbooks-xlsx
-
-        // Fix: Write into gtfs sqlite but into another table -> later remove that table
-        // Problem: I dont think there is a way to read sqlite actually
-    /**
-    TempFileExtractor
-        -> TempFileInterpreter
-        -> TempCSVInterpreter
-        -> DecimalIntegerTableInterpreter
-        -> GTFSLoader;
-    **/
-
-        // TODO composite block for extraction file -> sheet
-        // todo composite block for transformers
 
     block GTFSExtractor oftype HttpExtractor {
         url: "https://gtfs.rhoenenergie-bus.de/GTFS.zip";
@@ -67,135 +35,16 @@ pipeline GTFSPipeline {
     }
 
     block GTFSTableInterpreter oftype TableInterpreter {
-        header: false; // true doesnt produce any rows for some reason
+        header: true;
         columns: [
             "stop_id" oftype integer, //integer,
             "stop_name" oftype text,
-            "stop_lat" oftype decimal, //decimal,
-            "stop_lon" oftype decimal, //decimal,
-            "zone_id" oftype text //Zone1925 //integer
+            "stop_lat" oftype Coordinate, //decimal,
+            "stop_lon" oftype Coordinate, //decimal,
+            "zone_id" oftype Zone1925 //Zone1925 //integer
         ];
     }
 
-
-    // Filter data: keep stops from zone 1925
-    /**
-    valuetype Zone1925 oftype text {
-        constraints: [ZoneFilterConstraint];
-    }
-    
-    constraint ZoneFilterConstraint oftype AllowlistConstraint {
-        allowlist: ["1925"];
-    } 
-    */
-    
-
-    // 1. Remove quotation marks
-    // 2. Load to file
-    // 3. Reread to sheet
-    // 2. Read as decimal in table interpreter+
-
-    // TODO Will that mess up scoring?
-
-
-    transform RemoveFrontQuotationMarks {
-        from TextLatitude oftype text;
-        to DecimalLatitude oftype text;
-
-        // Performs action only on first match
-        DecimalLatitude: TextLatitude replace /^"|"$/ with "";
-    }
-
-    transform RemoveBackQuotationMarks {
-        from TextLatitude oftype text;
-        to DecimalLatitude oftype text;
-
-        // without a second " the IDE interprets the rest of the code as string
-        // in actuality you'd only need the first part of the regex but if it works it works...
-        DecimalLatitude: TextLatitude replace /"$|^"/ with "";
-    }
-
-    block FrontQuotationMarkTransformer oftype TableTransformer {
-        inputColumns: ['stop_lat'];
-        outputColumn: 'stop_lat';
-        uses: RemoveFrontQuotationMarks;
-    }
-
-    block BackQuotationMarkTransformer oftype TableTransformer {
-        inputColumns: ['stop_lat'];
-        outputColumn: 'stop_lat';
-        uses: RemoveBackQuotationMarks;
-    }
-
-    block FrontQuotationMarkTransformer2 oftype TableTransformer {
-        inputColumns: ['stop_lon'];
-        outputColumn: 'stop_lon';
-        uses: RemoveFrontQuotationMarks;
-    }
-
-    block BackQuotationMarkTransformer2 oftype TableTransformer {
-        inputColumns: ['stop_lon'];
-        outputColumn: 'stop_lon';
-        uses: RemoveBackQuotationMarks;
-    }
-
-    block FrontQuotationMarkTransformer3 oftype TableTransformer {
-        inputColumns: ['zone_id'];
-        outputColumn: 'zone_id';
-        uses: RemoveFrontQuotationMarks;
-    }
-
-    block BackQuotationMarkTransformer3 oftype TableTransformer {
-        inputColumns: ['zone_id'];
-        outputColumn: 'zone_id';
-        uses: RemoveBackQuotationMarks;
-    }
-
-    block FrontQuotationMarkTransformer4 oftype TableTransformer {
-        inputColumns: ['stop_id'];
-        outputColumn: 'stop_id';
-        uses: RemoveFrontQuotationMarks;
-    }
-
-    block BackQuotationMarkTransformer4 oftype TableTransformer {
-        inputColumns: ['stop_id'];
-        outputColumn: 'stop_id';
-        uses: RemoveBackQuotationMarks;
-    }
-
-    block TempLoader oftype CSVFileLoader {
-        file: "./temp.csv";
-    }
-
-    block TempSQLLoader oftype SQLiteLoader {
-        table: "temp";
-        file: "./gtfs.sqlite";
-    }
-    
-    
-    block TempFileExtractor oftype LocalFileExtractor {
-        filePath: "temp.csv";
-    }
-
-    block TempSQLExtractor oftype LocalFileExtractor {
-        filePath: "gtfs.sqlite";
-    }
-
-    block TempFileInterpreter oftype TextFileInterpreter { }
-
-    block TempCSVInterpreter oftype CSVInterpreter { }
-
-    // Read the actual correct datatypes
-    block DecimalIntegerTableInterpreter oftype TableInterpreter {
-        header: true; // true doesnt produce any rows for some reason
-        columns: [
-            "stop_id" oftype integer,
-            "stop_name" oftype text,
-            "stop_lat" oftype Coordinate,
-            "stop_lon" oftype Coordinate,
-            "zone_id" oftype Zone1925
-        ];
-    }
 
     // Filter
     valuetype Zone1925 oftype integer {
@@ -236,6 +85,4 @@ pipeline GTFSPipeline {
         table: "stops";
         file: "./gtfs.sqlite";
     }
-
-    //TODO rm temp?
 }
