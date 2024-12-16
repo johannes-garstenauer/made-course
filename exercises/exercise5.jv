@@ -1,5 +1,11 @@
 pipeline GTFSPipeline {
 
+
+    // Problem: how to transform dataypes
+    
+    // TODO how to get from block -> table
+    // Or how to change datatypes elegantly?
+
     GTFSExtractor
         -> GTFSArchiveInterpreter
         -> GTFSFilePicker
@@ -7,7 +13,7 @@ pipeline GTFSPipeline {
         -> GTFSCSVInterpreter
         -> GTFSColumnDeleter
         -> GTFSTableInterpreter
-        
+        /**
         -> FrontQuotationMarkTransformer
         -> BackQuotationMarkTransformer
         -> FrontQuotationMarkTransformer2
@@ -16,13 +22,22 @@ pipeline GTFSPipeline {
         -> BackQuotationMarkTransformer3
         -> FrontQuotationMarkTransformer4
         -> BackQuotationMarkTransformer4
-        -> TempLoader;
-        
-        TempFileExtractor
+        **/
+        //-> TempLoader;
+        -> GTFSLoader;
+
+        // Temp is only created when the second pipeline isnt executed. Why?
+        // Here it works? https://jvalue.github.io/jayvee/docs/user/examples/workbooks-xlsx
+
+        // Fix: Write into gtfs sqlite but into another table -> later remove that table
+        // Problem: I dont think there is a way to read sqlite actually
+    /**
+    TempFileExtractor
         -> TempFileInterpreter
         -> TempCSVInterpreter
         -> DecimalIntegerTableInterpreter
         -> GTFSLoader;
+    **/
 
         // TODO composite block for extraction file -> sheet
         // todo composite block for transformers
@@ -41,7 +56,9 @@ pipeline GTFSPipeline {
 
     block GTFSFileInterpreter oftype TextFileInterpreter { }
 
-    block GTFSCSVInterpreter oftype CSVInterpreter { }
+    block GTFSCSVInterpreter oftype CSVInterpreter {
+        enclosing: '"';
+     }
     
     // Delete intermediate columns in order to match them below
     // B, D
@@ -52,10 +69,10 @@ pipeline GTFSPipeline {
     block GTFSTableInterpreter oftype TableInterpreter {
         header: false; // true doesnt produce any rows for some reason
         columns: [
-            "stop_id" oftype text, //integer,
+            "stop_id" oftype integer, //integer,
             "stop_name" oftype text,
-            "stop_lat" oftype text, //decimal,
-            "stop_lon" oftype text, //decimal,
+            "stop_lat" oftype decimal, //decimal,
+            "stop_lon" oftype decimal, //decimal,
             "zone_id" oftype text //Zone1925 //integer
         ];
     }
@@ -146,13 +163,22 @@ pipeline GTFSPipeline {
         uses: RemoveBackQuotationMarks;
     }
 
-
     block TempLoader oftype CSVFileLoader {
         file: "./temp.csv";
     }
 
-     block TempFileExtractor oftype LocalFileExtractor {
+    block TempSQLLoader oftype SQLiteLoader {
+        table: "temp";
+        file: "./gtfs.sqlite";
+    }
+    
+    
+    block TempFileExtractor oftype LocalFileExtractor {
         filePath: "temp.csv";
+    }
+
+    block TempSQLExtractor oftype LocalFileExtractor {
+        filePath: "gtfs.sqlite";
     }
 
     block TempFileInterpreter oftype TextFileInterpreter { }
