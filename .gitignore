@@ -16,3 +16,4 @@ project/pipelinevenv/pyvenv.cfg
 .idea/vcs.xml
 .idea/inspectionProfiles/profiles_settings.xml
 project/pipelinevenv/*
+/project/figures/
