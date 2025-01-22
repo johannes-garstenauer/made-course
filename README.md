@@ -15,3 +15,6 @@ policies. This project aims to analyze mortality related to COVID-19 in the Amer
 
 ### Exercise Folder
 - A set [jayvee](https://github.com/jvalue/jayvee) scripts for completing course related exercises
+
+## Note
+When executing the test script or Github Actions respectively, a common cause of failure is, that some dataset providers are notoriously unreliable. This specifically applies to the Chilean Open Data Portal.
